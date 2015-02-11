@@ -1,0 +1,22 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+#{if protoUser}
+	<div class="user">
+		<h2 class="user-title">
+			Kontakte von: ${protoUser?.email}
+		</h2>
+		<ul>
+			#{list items:protoUser.xingContacts, as:'contact'}
+			*{Ausblenden von nicht vorhandenen (optionalen) Informationen}* 
+		    <li>${contact.firstName} ${contact.name}, ${contact.active_email}</li>
+			#{/list}
+		</ul>
+		
+	</div>
+	
+#{/if}
+#{else}
+	<div class="empty">
+		There are currently no users to display.
+	</div>
+#{/else}

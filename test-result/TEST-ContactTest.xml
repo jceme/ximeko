@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<testsuite failures="1" time="0.078" errors="0" skipped="0" tests="1" name="ContactTest">
+  <testcase classname="ContactTest" name="testCreateInvalidContactandSaveInDatabase" time="0.047">
+                  <failure type="" message="Failure, expected null, but was:&lt;Contact[1]&gt;">
+        <![CDATA[
+          In /test/ContactTest.java, line 39
+          
+                  	assertNull(hannes); :
+          
+        ]]>
+        </failure>
+                  <system-err>
+            java.lang.AssertionError: expected null, but was:&lt;Contact[1]&gt;
+	at org.junit.Assert.fail(Assert.java:88)
+	at org.junit.Assert.failNotNull(Assert.java:664)
+	at org.junit.Assert.assertNull(Assert.java:646)
+	at org.junit.Assert.assertNull(Assert.java:656)
+	at ContactTest.testCreateInvalidContactandSaveInDatabase(ContactTest.java:39)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at play.test.PlayJUnitRunner$StartPlay$2$1.evaluate(PlayJUnitRunner.java:126)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at play.test.PlayJUnitRunner.run(PlayJUnitRunner.java:70)
+	at org.junit.runners.Suite.runChild(Suite.java:127)
+	at org.junit.runners.Suite.runChild(Suite.java:26)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:160)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:138)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:117)
+	at play.test.TestEngine.run(TestEngine.java:187)
+	at controllers.TestRunner$1.doJobWithResult(TestRunner.java:79)
+	at controllers.TestRunner$1.doJobWithResult(TestRunner.java:1)
+	at play.jobs.Job$2.apply(Job.java:196)
+	at play.db.jpa.JPA.withTransaction(JPA.java:234)
+	at play.db.jpa.JPA.withinFilter(JPA.java:195)
+	at play.db.jpa.JPAPlugin$TransactionalFilter.withinFilter(JPAPlugin.java:299)
+	at play.jobs.Job.withinFilter(Job.java:175)
+	at play.jobs.Job.call(Job.java:194)
+	at play.jobs.Job$1.call(Job.java:117)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:178)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:292)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:745)
+
+          </system-err>  
+        }
+                  </testcase>
+  <testcase classname="ContactTest" name="testCreateContactAndSaveInDatabase" time="0.031">
+      </testcase>
+</testsuite>

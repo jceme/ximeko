@@ -1,0 +1,15 @@
+# Test data
+
+PrototypeUser(bob):
+    email:          bob@gmail.com
+    password:       secret
+    
+XingContact(jeff):
+	name: 			bournst
+	firstName:		jeff		
+    xingId:			12345xyz;
+	prototypeUser:	bob;
+	active_email:   jeff@gmail.com
+	password:       secret
+        
+ 
