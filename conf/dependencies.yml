@@ -3,6 +3,9 @@
 require:
     - play
     - provided -> scribe 1.3.7
+    - provided -> jackson-core 2.5.0
+    - provided -> jackson-databind 2.5.0
+    - provided -> jackson-annotations 2.5.0
 
 repositories:
   - provided:

@@ -6,6 +6,9 @@
 	
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:\play\play1-1.3.0\framework\play-1.3.0.jar" sourcepath="C:/play/play1-1.3.0/framework/src" />
+	<classpathentry kind="lib" path="c:\ximeko\lib\jackson-annotations-2.5.0.jar"/>
+	<classpathentry kind="lib" path="c:\ximeko\lib\jackson-core-2.5.0.jar"/>
+	<classpathentry kind="lib" path="c:\ximeko\lib\jackson-databind-2.5.0.jar"/>
 	<classpathentry kind="lib" path="c:\ximeko\lib\scribe-1.3.7.jar"/>
 	<classpathentry kind="lib" path="C:\play\play1-1.3.0\modules\docviewer\lib\play-docviewer.jar"/>
 	<classpathentry kind="lib" path="C:\play\play1-1.3.0\framework\lib\activation-1.1.1.jar"/>

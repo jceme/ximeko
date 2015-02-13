@@ -1,23 +1,5 @@
-11 Feb 2015 16:13:04,119 INFO  ~ Starting c:\ximeko
-11 Feb 2015 16:13:05,022 WARN  ~ You're running Play! in DEV mode
-11 Feb 2015 16:13:05,093 INFO  ~ Listening for HTTP on port 9000 (Waiting a first request to start) ...
-11 Feb 2015 16:13:15,434 ERROR ~ 
-
-@6l6fbphpp
-Internal Server Error (500) for request GET /
-
-Compilation error (In /app/controllers/AppAccessOnly.java around line 1)
-The file /app/controllers/AppAccessOnly.java could not be compiled. Error raised is : The declared package "" does not match the expected package "controllers"
-
-play.exceptions.CompilationException: The declared package "" does not match the expected package "controllers"
-	at play.classloading.ApplicationCompiler$2.acceptResult(ApplicationCompiler.java:256)
-	at org.eclipse.jdt.internal.compiler.Compiler.handleInternalException(Compiler.java:678)
-	at org.eclipse.jdt.internal.compiler.Compiler.compile(Compiler.java:522)
-	at play.classloading.ApplicationCompiler.compile(ApplicationCompiler.java:292)
-	at play.classloading.ApplicationClassloader.getAllClasses(ApplicationClassloader.java:428)
-	at play.Play.start(Play.java:527)
-	at play.Play.detectChanges(Play.java:653)
-	at play.Invoker$Invocation.init(Invoker.java:198)
-	at Invocation.HTTP Request(Play!)
-11 Feb 2015 16:14:24,142 INFO  ~ Connected to jdbc:mysql://localhost/ximeko for default
-11 Feb 2015 16:14:25,292 INFO  ~ Application 'Xing Messe Kontakte' is now started !
+13 Feb 2015 15:20:32,928 INFO  ~ Starting c:\ximeko
+13 Feb 2015 15:20:33,862 WARN  ~ You're running Play! in DEV mode
+13 Feb 2015 15:20:33,946 INFO  ~ Listening for HTTP on port 9000 (Waiting a first request to start) ...
+13 Feb 2015 15:20:39,874 INFO  ~ Connected to jdbc:mysql://localhost/ximeko for default
+13 Feb 2015 15:20:41,067 INFO  ~ Application 'Xing Messe Kontakte' is now started !

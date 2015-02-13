@@ -1,0 +1,32 @@
+#{extends 'main.html' /}
+#{set title:'Kontaktliste' /}
+
+<h1>Liste der Kontakte</h1>
+
+#{ifnot contacts}
+    <p>
+        Es konnten keine Kontakte gefunden werden
+    </p>
+#{/ifnot}
+#{else}
+   <table>
+       <thead>
+           <tr>
+               <th>Vorname</th>
+               <th>Nachname</th>
+               <th>Email</th>
+               <th>Telefon</th>
+               <th>weitere</th>
+           </tr>
+       </thead>
+       <tbody>
+           #{list contacts, as:'contact'}
+               <tr>
+                   <td>${contact.firstName}</td>
+                   <td>${contact.name}</td>
+                   <td>${contact.active_email}</td>
+               </tr>
+           #{/list}
+       </tbody>
+   </table> 
+#{/else}

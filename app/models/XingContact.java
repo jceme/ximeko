@@ -6,6 +6,9 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import play.data.validation.Required;
 import play.db.jpa.Model;
 
@@ -19,12 +22,23 @@ public class XingContact extends Model {
 	public String firstName;
 	
 	@Required
+	@JsonProperty("id")
 	public String xingId;
 	
 	@ManyToMany
 	public List<PrototypeUser> prototypeUsers;
 	
 	public String active_email;
+	
+	public XingContact () {}
+	
+	public XingContact (XingContact sourceContact) { 
+		this.active_email = sourceContact.active_email;
+		this.name	= sourceContact.name;
+		this.xingId = sourceContact.xingId;
+		this.firstName = sourceContact.firstName;
+		this.prototypeUsers = new ArrayList();
+	}
 	
 	public XingContact (String name, String firstName, String xingId, PrototypeUser prototypeUser) {
 		this.name = name;
@@ -44,7 +58,4 @@ public class XingContact extends Model {
 		this.prototypeUsers.add(prototypeUser);
 		this.active_email = active_email;
 	}
-	
-	
-
 }

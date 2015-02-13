@@ -18,7 +18,7 @@ public class XingContactTest extends UnitTest{
 	@Test
     public void testCreatePrototypeUsersAndXingContactsAndSaveInDatabase() {
     	//Create new PrototypeUser and  XingContact
-    	PrototypeUser testUser1 = new PrototypeUser("max@mustermann.com", "pswd").save();
+    	PrototypeUser testUser1 = new PrototypeUser("max@mustermann.com", "pswd12").save();
     	XingContact testXing1 = new XingContact("mueller", "thomas", "xyz123", testUser1 , "thommy.mueller@jast.com").save();
     	testUser1.xingContacts.add(testXing1);
     	testUser1.save();

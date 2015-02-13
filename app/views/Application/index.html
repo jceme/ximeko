@@ -1,22 +1,28 @@
 #{extends 'main.html' /}
 #{set title:'Home' /}
-#{if protoUser}
-	<div class="user">
-		<h2 class="user-title">
-			Kontakte von: ${protoUser?.email}
-		</h2>
-		<ul>
-			#{list items:protoUser.xingContacts, as:'contact'}
-			*{Ausblenden von nicht vorhandenen (optionalen) Informationen}* 
-		    <li>${contact.firstName} ${contact.name}, ${contact.active_email}</li>
-			#{/list}
-		</ul>
-		
-	</div>
-	
-#{/if}
-#{else}
-	<div class="empty">
-		There are currently no users to display.
-	</div>
-#{/else}
+
+<div id="login">
+    
+    #{form @login(), id:'formLogin'}
+        <p class="field">
+            <label>Email:</label>
+            <input type="text" name="useremail" size="19" value="${flash.useremail}" />
+        </p>
+        <p class="field">
+            <label>Passwort:</label>
+            <input type="password" name="password" size="19"/>
+        </p>    
+        <p class="buttons">
+            <input type="submit" value="Login" />
+        </p> 
+    #{/form}
+
+    <p>
+        <a href="@{register()}">Neues Benutzerkonto anlegen</a>
+    </p>
+
+</div>
+
+<script type="text/javascript" charset="${_response_encoding}">
+    sessvars.$.clearMem()
+</script>
