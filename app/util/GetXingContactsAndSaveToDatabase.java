@@ -1,4 +1,4 @@
-package controllers;
+package util;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,15 +24,19 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import controllers.Contacts;
 import models.*;
 
-public class GetXingContactsAndSaveToDatabase extends Controller {
+public class GetXingContactsAndSaveToDatabase {
 	
 	private static final String PROTECTED_RESOURCE_URL = "https://api.xing.com/v1/users/me";
 	private static final String GET_ID_EMAIL = "https://api.xing.com/v1/users/me.json?fields=id,active_email";
-    private static final String TOKEN_PATH = "C:/ximeko/accessToken.ser";
+	private static final String GET_CONTACTS = "https://api.xing.com/v1/users/me/contacts.json?user_fields=id,first_name,last_name,display_name";
+    //Variabilität einbauen, damit zwei PrototypeUser verschiedene Dateien haben
 	
-    public static void index(PrototypeUser currentUser ) {
+    public static void getContactsForUser(PrototypeUser currentUser ) {
+    
+    	final String TOKEN_PATH = "C:/ximeko/userKeys/"+currentUser.email+"Token.ser";
 		
 		OAuthService service = new ServiceBuilder().
 				provider(XingApi.class)
@@ -75,26 +79,24 @@ public class GetXingContactsAndSaveToDatabase extends Controller {
 				catch (IOException e) {}
 		}
 		if (readAccessToken != null) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, GET_ID_EMAIL);
+			OAuthRequest request = new OAuthRequest(Verb.GET, GET_CONTACTS);
 			service.signRequest(readAccessToken, request);
 			Response response = request.send();
 			
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 			try {
-//				PrototypeUser testUser1 = new PrototypeUser("this@live.com", "pswd").save();
-				XingContactArray contacts = mapper.readValue(response.getBody(), XingContactArray.class);
-				System.out.println(contacts.xingContactList[0].active_email);
-				XingContact testXing1 = new XingContact (contacts.xingContactList[0]);
-				
-				PrototypeUser dbUser = PrototypeUser.find("byEmail", currentUser.email).first();
-		    	testXing1.prototypeUsers.add(dbUser);
-		    	testXing1.save();
-		    	dbUser.xingContacts.add(testXing1);
-		    	dbUser.save();
-//				UserArray users = mapper.readValue(response.getBody(), UserArray.class);
-//				System.out.println("user_id:" + users.getUserArray()[0].getId());
-//				System.out.println("active_email:" +  users.getUserArray()[0].getActive_email());
+				ContactsArray contactsArray = mapper.readValue(response.getBody(), ContactsArray.class);
+				for(XingContact contact: contactsArray.contactList[0].xingContactList){
+					System.out.println(contact.active_email);
+					XingContact testXing1 = new XingContact (contact);
+					testXing1.prototypeUsers.add(currentUser);
+					testXing1.save();
+					currentUser.xingContacts.add(testXing1);
+					currentUser.save();
+					//PrototypeUser dbUser = PrototypeUser.find("byEmail", currentUser.email).first();
+				}
+				Contacts.start();
 			} catch (JsonParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -105,9 +107,6 @@ public class GetXingContactsAndSaveToDatabase extends Controller {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			System.out.println();
-			System.out.println("Thats it man! Go and build something awesome with Scribe! :)");
 		}
 		else {
 		System.out.println("=== Xing's OAuth Workflow ===");
@@ -158,7 +157,7 @@ public class GetXingContactsAndSaveToDatabase extends Controller {
 
 		// Now let's go and ask for a protected resource!
 		System.out.println("Now we're going to access a protected resource...");
-		OAuthRequest request = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL);
+		OAuthRequest request = new OAuthRequest(Verb.GET, GET_CONTACTS);
 		service.signRequest(accessToken, request);
 		Response response = request.send();
 		System.out.println("Got it! Lets see what we found...");

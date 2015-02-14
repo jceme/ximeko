@@ -16,10 +16,14 @@ import play.db.jpa.Model;
 public class XingContact extends Model {
 	
 	@Required
+	@JsonProperty("last_name")
 	public String name;
 	
 	@Required
+	@JsonProperty("first_name")
 	public String firstName;
+	
+	public String display_name;
 	
 	@Required
 	@JsonProperty("id")
@@ -37,6 +41,7 @@ public class XingContact extends Model {
 		this.name	= sourceContact.name;
 		this.xingId = sourceContact.xingId;
 		this.firstName = sourceContact.firstName;
+		this.display_name = sourceContact.display_name;
 		this.prototypeUsers = new ArrayList();
 	}
 	

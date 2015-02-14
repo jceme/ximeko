@@ -3,80 +3,41 @@ package controllers;
 import play.*;
 import play.mvc.*;
 import play.data.validation.*;
+import util.GetXingContactsAndSaveToDatabase;
 
 import java.util.*;
 
 import models.*;
+import util.*;
 
 public class Contacts extends Application {
     
     @Before
     static void checkUser() {
         if(connected() == null) {
-            flash.error("Please log in first");
+            flash.error("Bitte loggen Sie sich zunächst ein.");
             Application.index();
         }
     }
     
     // ~~~
     
-    public static void index() {
+    public static void list() {
         List<XingContact> contacts = connected().xingContacts;
-        //find("byPrototypeUsers", connected()).fetch();
         render(contacts);
     }
+    
+    public static void start() {
+    	List<XingContact> contacts = connected().xingContacts;
+    	int numberOfContacts = contacts.size();
+        render(numberOfContacts);
+    }
+    
+    public static void connectWithXing() {
+    	GetXingContactsAndSaveToDatabase.getContactsForUser(connected());
+    	
+    }
 
-    public static void list(String search, Integer size, Integer page) {
-        List<XingContact> contacts = null;
-        page = page != null ? page : 1;
-        if(search.trim().length() == 0) {
-            contacts = XingContact.all().fetch(page, size);
-        } else {
-            search = search.toLowerCase();
-            contacts = XingContact.find("lower(name) like ?1 OR lower(city) like ?2", "%"+search+"%", "%"+search+"%").fetch(page, size);
-        }
-        render(contacts, search, size, page);
-    }
-    
-    public static void show(Long id) {
-        XingContact contact = XingContact.findById(id);
-        render(contact);
-    }
-    
-//    public static void book(Long id) {
-//        Hotel hotel = Hotel.findById(id);
-//        render(hotel);
-//    }
-    
-//    public static void confirmBooking(Long id, Booking booking) {
-//        Hotel hotel = Hotel.findById(id);
-//        booking.hotel = hotel;
-//        booking.user = connected();
-//        validation.valid(booking);
-//        
-//        // Errors or revise
-//        if(validation.hasErrors() || params.get("revise") != null) {
-//            render("@book", hotel, booking);
-//        }
-//        
-//        // Confirm
-//        if(params.get("confirm") != null) {
-//            booking.create();
-//            flash.success("Thank you, %s, your confimation number for %s is %s", connected().name, hotel.name, booking.id);
-//            index();
-//        }
-//        
-//        // Display booking
-//        render(hotel, booking);
-//    }
-    
-//    public static void cancelBooking(Long id) {
-//        Booking booking = Booking.findById(id);
-//        booking.delete();
-//        flash.success("Booking cancelled for confirmation number %s", booking.id);
-//        index();
-//    }
-    
     public static void settings() {
         render();
     }
@@ -92,8 +53,7 @@ public class Contacts extends Application {
         }
         connected.save();
         flash.success("Passwort erfolgreich geändert");
-        index();
+        list();
     }
-    
 }
 

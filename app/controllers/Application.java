@@ -30,7 +30,7 @@ public class Application extends Controller {
 
     public static void index() {
         if(connected() != null) {
-            Contacts.index();
+        	Contacts.start();
         }
         render();
     }
@@ -41,14 +41,14 @@ public class Application extends Controller {
     
     public static void saveUser(@Valid PrototypeUser user, String verifyPassword) {
         validation.required(verifyPassword);
-        validation.equals(verifyPassword, user.password).message("Your password doesn't match");
+        validation.equals(verifyPassword, user.password).message("Die Passwörter stimmen nicht überein");
         if(validation.hasErrors()) {
             render("@register", user, verifyPassword);
         }
         user.create();
         session.put("user", user.email);
-        flash.success("Welcome, " + user.email);
-        Contacts.index();
+        flash.success("Willkommen, " + user.email);
+        Contacts.start();
     }
     
     public static void login(String useremail, String password) {
@@ -56,7 +56,7 @@ public class Application extends Controller {
         if(user != null) {
             session.put("user", user.email);
             flash.success("Willkommen, " + user.email);
-            Contacts.index();         
+            Contacts.start();         
         }
         // Oops
         flash.put("username", useremail);
