@@ -20,6 +20,13 @@ a {
 }
 
 /** Main **/
+.table_no  {
+	color: #ff0000;
+}
+
+.table_yes {
+	color: green;	
+}
 
 .fError, .fSuccess {
     text-align: center;
@@ -45,7 +52,7 @@ a {
 #header {
     height: 200px;
     position: relative;
-    background: #fff url(../images/hotel.jpg) 0px -90px no-repeat;
+    background: #fff url(../images/fair.png) 0px  no-repeat;
 }
 
 #header h1 {
@@ -135,7 +142,7 @@ form p.field {
 
 form strong {
     display: block;
-    width: 150px;
+    width: 180px;
     float: left;
     text-align: right;
     margin-right: 10px;

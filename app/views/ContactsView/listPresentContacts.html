@@ -1,0 +1,43 @@
+#{extends 'main.html' /}
+#{set title:'Kontaktliste' /}
+
+<h1>Liste der anwesenden Xing-Kontakte</h1>
+
+#{ifnot presentContacts}
+    <p>
+        Es konnten keine anwesenden Kontakte gefunden werden
+    </p>
+#{/ifnot}
+#{else}
+   <table>
+       <thead>
+           <tr>
+               <th>Displayname</th>
+               <th>Montag</th>
+               <th>Dienstag</th>
+               <th>Mittwoch</th>
+               <th>Donnerstag</th>
+               <th>Freitag</th>
+               <th>Samstag</th>
+               <th>Sonntag</th>
+               <th>Test</th>
+           </tr>
+       </thead>
+       <tbody>
+               <tr>
+          		 #{list presentContacts, as:'contact'}
+                   <td>${contact.display_name}</td>
+                   <td>${contact.prototypeUsers.get(0).presentMonday}</td>
+                   <td>${contact.prototypeUsers.get(0).presentTuesday}</td>
+                   <td>${contact.prototypeUsers.get(0).presentWednesday}</td>
+                   <td>${contact.prototypeUsers.get(0).presentThursday}</td>
+                   <td>${contact.prototypeUsers.get(0).presentFriday}</td>
+                   <td>${contact.prototypeUsers.get(0).presentSaturday}</td>
+                   <td>${contact.prototypeUsers.get(0).presentSunday}</td>
+                   <td #{ifnot contact.prototypeUsers.get(0).presentMonday == 'true'} class = "table_no"> nein #{/ifnot}
+                   	   #{if contact.prototypeUsers.get(0).presentMonday == 'true'} class = "table_yes"> ja #{/if} </td>
+               </tr>
+           #{/list}
+       </tbody>
+   </table> 
+#{/else}

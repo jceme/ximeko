@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 
 import org.scribe.builder.ServiceBuilder;
@@ -20,21 +22,28 @@ import org.scribe.oauth.OAuthService;
 import play.mvc.Controller;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.google.gson.Gson;
 
-import controllers.Contacts;
+import controllers.ContactsView;
 import models.*;
 
 public class GetXingContactsAndSaveToDatabase {
 	
 	private static final String PROTECTED_RESOURCE_URL = "https://api.xing.com/v1/users/me";
 	private static final String GET_ID_EMAIL = "https://api.xing.com/v1/users/me.json?fields=id,active_email";
-	private static final String GET_CONTACTS = "https://api.xing.com/v1/users/me/contacts.json?user_fields=id,first_name,last_name,display_name";
-    //Variabilität einbauen, damit zwei PrototypeUser verschiedene Dateien haben
+	private static final String GET_ID = "https://api.xing.com/v1/users/me.json?fields=id";
+	private static final String GET_CONTACTS = "https://api.xing.com/v1/users/me/contacts.json?user_fields=id,first_name,last_name,display_name,permalink";
 	
-    public static void getContactsForUser(PrototypeUser currentUser ) {
+    public static byte getContactsForUser(PrototypeUser currentUser ) {
     
     	final String TOKEN_PATH = "C:/ximeko/userKeys/"+currentUser.email+"Token.ser";
 		
@@ -79,91 +88,87 @@ public class GetXingContactsAndSaveToDatabase {
 				catch (IOException e) {}
 		}
 		if (readAccessToken != null) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, GET_CONTACTS);
-			service.signRequest(readAccessToken, request);
-			Response response = request.send();
 			
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-			try {
-				ContactsArray contactsArray = mapper.readValue(response.getBody(), ContactsArray.class);
-				for(XingContact contact: contactsArray.contactList[0].xingContactList){
-					System.out.println(contact.active_email);
-					XingContact testXing1 = new XingContact (contact);
-					testXing1.prototypeUsers.add(currentUser);
-					testXing1.save();
-					currentUser.xingContacts.add(testXing1);
-					currentUser.save();
-					//PrototypeUser dbUser = PrototypeUser.find("byEmail", currentUser.email).first();
+				//Send Api request for users xing id
+				OAuthRequest request = new OAuthRequest(Verb.GET, GET_ID_EMAIL);
+				service.signRequest(readAccessToken, request);
+				Response response = request.send();
+				Gson gson = new Gson();
+				JsonUsers helpUser = gson.fromJson(response.getBody(), JsonUsers.class);
+				currentUser.active_email = helpUser.usersList.get(0).active_email;
+				currentUser.xingId = helpUser.usersList.get(0).xingId;
+				currentUser.save();
+				
+				//Send Api request for contacts
+				request = new OAuthRequest(Verb.GET, GET_CONTACTS);
+				service.signRequest(readAccessToken, request);
+
+				//checken ob response NICHT null...
+				response = request.send();
+				
+				gson = new Gson();
+				JsonContactsWrapper contactsWrapper = gson.fromJson(
+						response.getBody(), JsonContactsWrapper.class);
+				XingContact checkForExistendId;
+				byte numberOfExistendContacts = 0;
+				Iterator<XingContact> iterator = contactsWrapper.contacts.xingContactList
+						.iterator();
+				if (contactsWrapper.contacts.xingContactList != null) {
+					while (iterator.hasNext()) {
+						XingContact newContact = new XingContact();
+						newContact = iterator.next();
+						checkForExistendId = XingContact.find("byXingId",
+								newContact.xingId).first();
+						if (checkForExistendId == null) {
+							newContact.prototypeUsers = new ArrayList();
+							newContact.prototypeUsers.add(currentUser);
+							newContact.save();
+							currentUser.xingContacts.add(newContact);
+							currentUser.save();
+						} else {
+							numberOfExistendContacts++;
+						}
+					}
 				}
-				Contacts.start();
-			} catch (JsonParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JsonMappingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				in.close();
+				return numberOfExistendContacts;
+		}
+		
+		else {
+			// Obtain the Request Token
+			Token requestToken = service.getRequestToken();
+			System.out.println(service.getAuthorizationUrl(requestToken));
+			System.out.println("Please paste the verifier here");
+			System.out.print(">>");
+			Verifier verifier = new Verifier(in.nextLine());
+			in.close();
+
+			// Trade the Request Token and Verfier for the Access Token
+			Token accessToken = service.getAccessToken(requestToken, verifier);
+
+			// save access token
+			try {
+				fos = new FileOutputStream(TOKEN_PATH);
+				oos = new ObjectOutputStream(fos);
+				oos.writeObject(accessToken);
+			}
+			catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-		else {
-		System.out.println("=== Xing's OAuth Workflow ===");
-		System.out.println();
-
-		// Obtain the Request Token
-		System.out.println("Fetching the Request Token...");
-		Token requestToken = service.getRequestToken();
-		System.out.println("Got the Request Token!");
-		System.out.println();
-		System.out.println("Now go and authorize Scribe here:");
-		System.out.println(service.getAuthorizationUrl(requestToken));
-		System.out.println("And paste the verifier here");
-		System.out.print(">>");
-		Verifier verifier = new Verifier(in.nextLine());
-		in.close();
-		System.out.println();
-
-		// Trade the Request Token and Verfier for the Access Token
-		System.out.println("Trading the Request Token for an Access Token...");
-		Token accessToken = service.getAccessToken(requestToken, verifier);
-		
-		System.out.println("Got the Access Token!");
-		System.out.println("(if your curious it looks like this: " + accessToken + " )");
-		System.out.println();
-		
-		// save access token
-		try {
-			fos = new FileOutputStream(TOKEN_PATH);
-			oos = new ObjectOutputStream(fos);
-			oos.writeObject(accessToken);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		finally {
-			if (oos != null)
-				try {
-					oos.close(); 
-				}
+			finally {
+				if (oos != null)
+					try {
+						oos.close(); 
+					}
 				catch (IOException ex) {}
-			if (fos != null)
-				try {
-					fos.close();
-				}
+				if (fos != null)
+					try {
+						fos.close();
+					}
 				catch (IOException ex2) {}
+			}
+			ContactsView.start();
 		}
-
-		// Now let's go and ask for a protected resource!
-		System.out.println("Now we're going to access a protected resource...");
-		OAuthRequest request = new OAuthRequest(Verb.GET, GET_CONTACTS);
-		service.signRequest(accessToken, request);
-		Response response = request.send();
-		System.out.println("Got it! Lets see what we found...");
-		System.out.println();
-		System.out.println(response.getBody());
-		System.out.println();
+		return 0;
     }
-	}
 }

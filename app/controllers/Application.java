@@ -1,8 +1,11 @@
 package controllers;
 
+import javax.persistence.PersistenceException;
+
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 import play.mvc.*;
 import play.data.validation.*;
-
 import models.*;
 
 public class Application extends Controller {
@@ -30,7 +33,7 @@ public class Application extends Controller {
 
     public static void index() {
         if(connected() != null) {
-        	Contacts.start();
+        	ContactsView.start();
         }
         render();
     }
@@ -45,10 +48,20 @@ public class Application extends Controller {
         if(validation.hasErrors()) {
             render("@register", user, verifyPassword);
         }
-        user.create();
-        session.put("user", user.email);
-        flash.success("Willkommen, " + user.email);
-        Contacts.start();
+        try {
+        	user.create();
+//        	PrototypeUser sameEmailUser = PrototypeUser.find("byEmail",user.email).first();
+//        	if (sameEmailUser == null) {
+        		//unterschied create und save?
+        		session.put("user", user.email);
+        		flash.success("Willkommen, " + user.email);
+        		ContactsView.start();
+        	
+        } catch (PersistenceException ex) {
+        	flash.put("user.email", user.email);
+    		flash.error("Email-Adresse \""+user.email+"\" ist bereits registriert.");
+    		register();
+        	}
     }
     
     public static void login(String useremail, String password) {
@@ -56,7 +69,7 @@ public class Application extends Controller {
         if(user != null) {
             session.put("user", user.email);
             flash.success("Willkommen, " + user.email);
-            Contacts.start();         
+            ContactsView.start();         
         }
         // Oops
         flash.put("username", useremail);

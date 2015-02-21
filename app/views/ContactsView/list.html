@@ -14,9 +14,7 @@
            <tr>
                <th>Vorname</th>
                <th>Nachname</th>
-               <th>Email</th>
-               <th>Telefon</th>
-               <th>weitere</th>
+               <th>Link</th>
            </tr>
        </thead>
        <tbody>
@@ -24,7 +22,7 @@
                <tr>
                    <td>${contact.firstName}</td>
                    <td>${contact.name}</td>
-                   <td>${contact.active_email}</td>
+                   <td><a href=${contact.permalink} target=_blank>zu Xing</a></td>
                </tr>
            #{/list}
        </tbody>

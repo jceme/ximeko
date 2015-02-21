@@ -3,31 +3,39 @@ package models;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 
+import org.hibernate.type.descriptor.sql.VarcharTypeDescriptor;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.gson.annotations.SerializedName;
 
 import play.data.validation.Required;
-import play.db.jpa.Model;
 
 @Entity
 public class XingContact extends Model {
 	
 	@Required
-	@JsonProperty("last_name")
+	@Column(unique = true, nullable = false)
+	@SerializedName("id")
+	public String xingId;
+	
+	
+	@Required
+	@SerializedName("last_name")
 	public String name;
 	
 	@Required
-	@JsonProperty("first_name")
+	@SerializedName("first_name")
 	public String firstName;
 	
-	public String display_name;
+	public String permalink;
 	
-	@Required
-	@JsonProperty("id")
-	public String xingId;
+	public String display_name;
+
 	
 	@ManyToMany
 	public List<PrototypeUser> prototypeUsers;
@@ -42,6 +50,7 @@ public class XingContact extends Model {
 		this.xingId = sourceContact.xingId;
 		this.firstName = sourceContact.firstName;
 		this.display_name = sourceContact.display_name;
+		this.permalink = sourceContact.permalink;
 		this.prototypeUsers = new ArrayList();
 	}
 	

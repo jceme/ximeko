@@ -1,0 +1,26 @@
+#{extends 'main.html' /}
+#{set title:'Übersicht' /}
+
+	%{
+		numberOfContacts = contacts.size()
+		numberOfPresentContacts = presentContacts.size();
+	%}
+    <p>
+        Anzahl der Xing-Kontakte: ${numberOfContacts} davon auf der Messe: ${numberOfPresentContacts}.
+    </p>
+    <br>
+	<h3>Wählen Sie eine Operation aus</h2>
+
+    #{ifnot numberOfContacts == 0}
+    <p>
+    	<a href="@{ContactsView.list()}">Xing-Kontakte anzeigen</a>
+    </p>
+    #{/ifnot}
+    #{ifnot numberOfPresentContacts == 0}
+    <p>
+    	<a href="@{ContactsView.listPresentContacts()}">Anwesende Xing-Kontakte anzeigen</a>
+    </p>
+    #{/ifnot}
+    <p>
+    	<a href="@{ContactsView.connectWithXing()}">Kontakte von XING importieren</a>
+    </p>

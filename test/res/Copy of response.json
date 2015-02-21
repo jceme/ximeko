@@ -1,0 +1,19 @@
+{
+  "contacts": {
+    "total": 2,
+    "users": [
+      {
+        "id": "12557029_f76f57",
+        "display_name": "Peter Pensold",
+        "first_name": "Peter",
+        "last_name": "Pensold"
+      },
+      {
+        "id": "18452923_9c8684",
+        "display_name": "Oliver Friedrich",
+        "first_name": "Oliver",
+        "last_name": "Friedrich"
+      }
+    ]
+  }
+}
