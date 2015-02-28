@@ -9,7 +9,7 @@ import models.*;
 
 public class getPresentXingContacts {
 	
-	public static List<XingContact> ofUser(PrototypeUser protoUser) {
+	public static List<XingContact> ofUser(User protoUser) {
 		
 		//Copy Test Beginn
 		XingContact[] listArray = protoUser.xingContacts.toArray(new XingContact[protoUser.xingContacts.size()]);
@@ -18,12 +18,12 @@ public class getPresentXingContacts {
 		
 		
 		//was ist mit Duplikaten?
-		List<PrototypeUser> protoList = PrototypeUser.findAll();
+		List<User> protoList = User.findAll();
 		List<String> protoIds = new ArrayList<String>();
 		
 		//ids der registrierten protoUser auslesen und in protoIds speichern
-		for (PrototypeUser prototypeUser : protoList) {
-			protoIds.add(prototypeUser.xingId);
+		for (User user : protoList) {
+			protoIds.add(user.xingId);
 		}
 		
 		//die XingKontakte löschen, deren ID in keinem ProtoypUser wieder zu finden sind

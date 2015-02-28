@@ -12,19 +12,19 @@ public class Application extends Controller {
     
     @Before
     static void addUser() {
-        PrototypeUser user = connected();
+        User user = connected();
         if(user != null) {
             renderArgs.put("user", user);
         }
     }
     
-    static PrototypeUser connected() {
+    static User connected() {
         if(renderArgs.get("user") != null) {
-            return renderArgs.get("user", PrototypeUser.class);
+            return renderArgs.get("user", User.class);
         }
         String username = session.get("user");
         if(username != null) {
-            return PrototypeUser.find("byEmail", username).first();
+            return User.find("byEmail", username).first();
         } 
         return null;
     }
@@ -42,7 +42,7 @@ public class Application extends Controller {
         render();
     }
     
-    public static void saveUser(@Valid PrototypeUser user, String verifyPassword) {
+    public static void saveUser(@Valid User user, String verifyPassword) {
         validation.required(verifyPassword);
         validation.equals(verifyPassword, user.password).message("Die Passwörter stimmen nicht überein");
         if(validation.hasErrors()) {
@@ -50,8 +50,6 @@ public class Application extends Controller {
         }
         try {
         	user.create();
-//        	PrototypeUser sameEmailUser = PrototypeUser.find("byEmail",user.email).first();
-//        	if (sameEmailUser == null) {
         		//unterschied create und save?
         		session.put("user", user.email);
         		flash.success("Willkommen, " + user.email);
@@ -61,11 +59,11 @@ public class Application extends Controller {
         	flash.put("user.email", user.email);
     		flash.error("Email-Adresse \""+user.email+"\" ist bereits registriert.");
     		register();
-        	}
+        }         
     }
     
     public static void login(String useremail, String password) {
-        PrototypeUser user = PrototypeUser.find("byEmailAndPassword", useremail, password).first();
+        User user = User.find("byEmailAndPassword", useremail, password).first();
         if(user != null) {
             session.put("user", user.email);
             flash.success("Willkommen, " + user.email);
@@ -81,5 +79,4 @@ public class Application extends Controller {
         session.clear();
         index();
     }
-
 }

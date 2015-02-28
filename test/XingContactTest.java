@@ -1,4 +1,4 @@
-import models.PrototypeUser;
+import models.User;
 import models.XingContact;
 
 import org.junit.Before;
@@ -12,15 +12,15 @@ public class XingContactTest extends UnitTest{
 	
 	@Test
     public void testCreatePrototypeUsersAndXingContactsAndSaveInDatabase() {
-    	//Create new PrototypeUser and  XingContact
-    	PrototypeUser testUser1 = new PrototypeUser("max@mustermann.com", "pswd12", "xing4").save();
+    	//Create new User and  XingContact
+    	User testUser1 = new User("max@mustermann.com", "pswd12", "xing4").save();
     	XingContact testXing1 = new XingContact("mueller", "thomas", "xing2", testUser1 , "thommy.mueller@jast.com").save();
     	testUser1.xingContacts.add(testXing1);
     	testUser1.save();
     	
     	
-    	//Retrieve PrototypeUser with email = mustermann
-    	PrototypeUser max = PrototypeUser.find("byEmail" , "max@mustermann.com").first();
+    	//Retrieve User with email = mustermann
+    	User max = User.find("byEmail" , "max@mustermann.com").first();
     	XingContact thomas = XingContact.find("byActive_email" , "thommy.mueller@jast.com").first();
     	
     	//Test
@@ -30,7 +30,7 @@ public class XingContactTest extends UnitTest{
     	assertEquals("thommy.mueller@jast.com", thomas.active_email);
     	
     	//more datasets
-    	PrototypeUser gordan = PrototypeUser.find("byEmail", "gordan.just@proto.de").first();
+    	User gordan = User.find("byEmail", "gordan.just@proto.de").first();
     	
     	XingContact testXing2 = new XingContact("heinrich", "urst", "12557029_6f254b", gordan , "urst.wurst@fleisch.com").save();
     	gordan.xingContacts.add(testXing2);

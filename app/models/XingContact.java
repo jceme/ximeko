@@ -6,11 +6,10 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 import org.hibernate.type.descriptor.sql.VarcharTypeDescriptor;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.google.gson.annotations.SerializedName;
 
 import play.data.validation.Required;
@@ -23,7 +22,6 @@ public class XingContact extends Model {
 	@SerializedName("id")
 	public String xingId;
 	
-	
 	@Required
 	@SerializedName("last_name")
 	public String name;
@@ -35,41 +33,28 @@ public class XingContact extends Model {
 	public String permalink;
 	
 	public String display_name;
-
 	
-	@ManyToMany
-	public List<PrototypeUser> prototypeUsers;
+	@ManyToOne
+	public User user;
 	
 	public String active_email;
 	
 	public XingContact () {}
 	
-	public XingContact (XingContact sourceContact) { 
-		this.active_email = sourceContact.active_email;
-		this.name	= sourceContact.name;
-		this.xingId = sourceContact.xingId;
-		this.firstName = sourceContact.firstName;
-		this.display_name = sourceContact.display_name;
-		this.permalink = sourceContact.permalink;
-		this.prototypeUsers = new ArrayList();
-	}
-	
-	public XingContact (String name, String firstName, String xingId, PrototypeUser prototypeUser) {
+	public XingContact (String name, String firstName, String xingId, User user) {
 		this.name = name;
 		this.firstName = firstName;
 		this.xingId = xingId;
-		this.prototypeUsers = new ArrayList();
-		this.prototypeUsers.add(prototypeUser);
+		this.user = user;
 	}
 
 	public XingContact(String name, String firstName, String xingId,
-			PrototypeUser prototypeUser, String active_email) {
+			User user, String active_email) {
 		super();
 		this.name = name;
 		this.firstName = firstName;
 		this.xingId = xingId;
-		this.prototypeUsers = new ArrayList();
-		this.prototypeUsers.add(prototypeUser);
+		this.user = user;
 		this.active_email = active_email;
 	}
 }
