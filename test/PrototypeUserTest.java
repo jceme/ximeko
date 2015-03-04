@@ -15,6 +15,7 @@ public class PrototypeUserTest extends UnitTest{
         Fixtures.deleteDatabase();
     }
 	
+	// XXX Very good .. Try to break up this single test into multiple tests for each test case
 	@Test
     public void testCreatePrototypeUserAndSaveInDatabase() {
     	//Create new User

@@ -39,9 +39,13 @@ public class XingContact extends Model {
 	
 	public String active_email;
 	
-	public XingContact () {}
+	public XingContact () {
+		// XXX Again this seems odd, see User()
+	}
 	
 	public XingContact (String name, String firstName, String xingId, User user) {
+		// XXX Just delegate:
+		// this(name, firstName, xingId, user, null);
 		this.name = name;
 		this.firstName = firstName;
 		this.xingId = xingId;

@@ -7,37 +7,40 @@ import models.User;
 import models.XingContact;
 
 public class XingPersistenceService {
+	// XXX You should avoid empty @params ... either comment on them or leave them out
 	/**
 	 * Extracts and saves the contacts of the contactsWrapper to the correspondent user into the database
 	 * @param currentUser
 	 * @param contactsWrapper
 	 */
-	public void persistContactsFromJsonContactsWrapper ( User currentUser, JsonContactsWrapper contactsWrapper) {
-		XingContact checkForExistendId;
-		User checkForExistendUser;
-		
-		Iterator<XingContact> iterator = contactsWrapper.contacts.xingContactList
-				.iterator();
+	public static void persistContactsFromJsonContactsWrapper ( User currentUser, JsonContactsWrapper contactsWrapper) {
+		//Iterator<XingContact> iterator = contactsWrapper.contacts.xingContactList.iterator();
+		// XXX That doesn't make sense to first access contactlist above with .iterator and check below if it is not null, do that before
 		if (contactsWrapper.contacts.xingContactList != null) {
 			
-			while (iterator.hasNext()) {
-				XingContact newContact = new XingContact();
-				newContact = iterator.next();
-				checkForExistendId = XingContact.find("byXingId",
+			// XXX Better use for loop for iteration
+			for (XingContact newContact : contactsWrapper.contacts.xingContactList) {
+			//while (iterator.hasNext()) {
+				// XXX Creating new XingContact first and immediately discarding it by using iterator.next()? ;)
+				//XingContact newContact = new XingContact();
+				//newContact = iterator.next();
+				XingContact checkForExistentId = XingContact.find("byXingId",
 						newContact.xingId).first();
 				
-				checkForExistendUser = User.find("byXingId",
+				User checkForExistentUser = User.find("byXingId",
 						newContact.xingId).first();
 				
-				if (checkForExistendId == null) {
-					if (checkForExistendUser != null) {
-						newContact.user = checkForExistendUser;
+				// XXX In this constellation move second find() into first if to avoid finding if xing id != null
+				if (checkForExistentId == null) {
+					if (checkForExistentUser != null) {
+						newContact.user = checkForExistentUser;
 					}
 					newContact.save();
 					currentUser.xingContacts.add(newContact);
 					currentUser.save();
 				}
 			}
+			// XXX A lot of saves esp by looping -> use batch update?
 		}
 	}
 }

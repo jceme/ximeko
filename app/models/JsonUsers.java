@@ -12,6 +12,8 @@ public class JsonUsers {
 	@SerializedName("users")
 	public List <User> usersList = new ArrayList<User>();
 	
+	// XXX No need to explicitly state empty constructor
+	// Only use it together with other constructors and when actually doing anything in it ;)
 	public JsonUsers () {}
 
 }

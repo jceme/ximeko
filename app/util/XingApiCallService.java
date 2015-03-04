@@ -22,12 +22,15 @@ import models.User;
 import models.XingContact;
 
 public class XingApiCallService {
+
+	// TODO make configurable
 	private static final String GET_ID_EMAIL = "https://api.xing.com/v1/users/me.json?fields=id,active_email";
 	private static final String GET_CONTACTS = "https://api.xing.com/v1/users/me/contacts.json?user_fields=id,first_name,last_name,display_name,permalink";
-	private final OAuthService service;
-	private Token requestToken = null;
+	private static final OAuthService service;
+	private static Token requestToken = null;
 	
-	public XingApiCallService() {
+	static {
+		// TODO make configurable
 		service = (OAuthService) new ServiceBuilder().
 				provider(XingApi.class)
 				.apiKey("891c8ed2c53864fb97c6")
@@ -42,7 +45,7 @@ public class XingApiCallService {
 	 * @return User with active_email and xing id from response
 	 * @throws IOException 
 	 */
-	public User getUserWithActiveMailAndId(Token token) throws IOException {
+	public static User getUserWithActiveMailAndId(Token token) throws IOException {
 		try {
 			OAuthRequest request = new OAuthRequest(Verb.GET, GET_ID_EMAIL);
 			service.signRequest(token, request);
@@ -61,7 +64,7 @@ public class XingApiCallService {
 	 * @return JsonContactsWrapper
 	 * @throws IOException 
 	 */
-	public JsonContactsWrapper getJsonContactsWrapperForToken (Token token) throws IOException {
+	public static JsonContactsWrapper getJsonContactsWrapperForToken (Token token) throws IOException {
 		try {
 			OAuthRequest request = new OAuthRequest(Verb.GET, GET_CONTACTS);
 			service.signRequest(token, request);
@@ -82,11 +85,11 @@ public class XingApiCallService {
 	 * 
 	 * @return the Url for the server authentication page
 	 */
-	public String getAuthorizationUrl() {
+	public static String getAuthorizationUrl() {
 		return service.getAuthorizationUrl( getRequestToken());
 	}
 
-	public Token getRequestToken() {
+	public static Token getRequestToken() {
 		if ( this.requestToken == null ) {
 			this.requestToken = service.getRequestToken();
 			return this.requestToken;
@@ -94,7 +97,7 @@ public class XingApiCallService {
 		else return this.requestToken;
 	}
 
-	public Token getAccessToken( Verifier verifier ) {
+	public static Token getAccessToken( Verifier verifier ) {
 		return service.getAccessToken( getRequestToken(), verifier );
 	}
 	

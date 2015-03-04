@@ -3,6 +3,7 @@ import java.util.*;
 import play.test.*;
 import models.*;
 
+// XXX LOL isn't this obsolete now? ;)
 public class BasicTest extends UnitTest {
 
     @Test

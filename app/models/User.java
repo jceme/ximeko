@@ -45,13 +45,26 @@ public class User extends Model {
 	public boolean presentSaturday;
 	public boolean presentSunday;
 	
-	public User () {};
+	
+	// XXX As with constructors, try to delegate all to one initializer
+	
+	public User () {
+		// XXX This seems odd since email and password is mandatory according to the remaining constructors
+		
+		// XXX Delegation would be:
+		// this(DEFAULT_EMAIL, DEFAULT_PASSWORD);
+	}
 	
 	public User (String email, String password) {
+		// XXX Only delegate like this:
+		// this(email, password, (String) null);
 		this.email = email;
 		this.password = password;
 		this.xingContacts= new ArrayList();
 	}
+	
+	// XXX So either a Xing ID or a Xing contact is required to have a valid user or is this optional? Then better is setters.
+	
 	public User (String email, String password, String xingId) {
 		this.email = email;
 		this.password = password;
@@ -60,9 +73,13 @@ public class User extends Model {
 	}
 	
 	public User (String email, String password, XingContact xingContact) {
+		// XXX First delegate
+		// this(email, password, (String) null);
+		// Skip this
 		this.email = email;
 		this.password = password;
 		this.xingContacts= new ArrayList();
+		// XXX And then just add contact (if it's not null?)
 		this.xingContacts.add(xingContact);
 	}
 	

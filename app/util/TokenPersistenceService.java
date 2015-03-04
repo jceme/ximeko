@@ -16,8 +16,10 @@ import org.scribe.oauth.OAuthService;
 import play.Logger;
 import models.User;
 
+// XXX Although it seems bad style (especially regarding testing and mocking) we better stick to Play's static habit
 public class TokenPersistenceService {
 	
+	// TODO make configurable
 	private static final String TOKEN_PATH = "C:/ximeko/userKeys/%EMAIL%Token.ser";	
 	
 	/**
@@ -25,7 +27,7 @@ public class TokenPersistenceService {
 	 * @param user
 	 * @return Token of user or null if no token exists
 	 */
-	public Token getTokenForUser(User user) throws IOException {
+	public static Token getTokenForUser(User user) throws IOException {
 
 		String path = TOKEN_PATH.replace("%EMAIL%", user.email);
 		try ( FileInputStream  fis = new FileInputStream(path); ObjectInputStream ois = new ObjectInputStream(fis) ) {
@@ -52,7 +54,7 @@ public class TokenPersistenceService {
 	 * Saves token of given user in file system
 	 * @throws IOException
 	 */
-	public void saveTokenForUser(User user, Token token) throws IOException {
+	public static void saveTokenForUser(User user, Token token) throws IOException {
 		String path = TOKEN_PATH.replace("%EMAIL%", user.email);
 		try (FileOutputStream fos = new FileOutputStream(path); ObjectOutputStream oos = new ObjectOutputStream(fos)){
 			oos.writeObject(token);

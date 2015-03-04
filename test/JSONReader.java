@@ -16,6 +16,7 @@ import controllers.ContactsView;
 
 public class JSONReader {
 
+	// XXX Make this a real unit test!!!
 	public static void main(String[] args) {
 		JSONReader reader = new JSONReader();
 		reader.readJSON();
@@ -43,6 +44,7 @@ public class JSONReader {
 			
 			JsonContactsWrapper contactswrapper = new JsonContactsWrapper();
 			contactswrapper = gson.fromJson(JSON, JsonContactsWrapper.class);
+			// XXX With real assertions ;)
 			System.out.println(contactswrapper.contacts.xingContactList.get(1).xingId);
 			
 			
@@ -93,6 +95,7 @@ public class JSONReader {
 		File file = new File(filename);
 
 		FileReader fr;
+		// XXX Always try to use try (..) { } with resources and fix resource leak!
 		try {
 			fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
@@ -102,7 +105,10 @@ public class JSONReader {
 				body = body + line;
 			}
 
-		} catch (FileNotFoundException e) {
+		}
+		// XXX Bad style, let exceptions fly if unhandleable here
+		// In unit tests exception are caught and make the tests fail rightfully
+		catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {

@@ -27,22 +27,20 @@ import com.google.gson.Gson;
 import controllers.ContactsView;
 import models.*;
 
+//XXX In addition to your important comments you could also add debug/trace logging to trace the execution path in log file for debugging purpose
 public class GetXingContactsAndSaveToDatabase {
 	
-	private static TokenPersistenceService topeService = new TokenPersistenceService();
-	private static XingApiCallService xingService = new XingApiCallService();
-	private static XingPersistenceService xingPersistService = new XingPersistenceService();
-	
     public static void forUser( User currentUser ) {
-    
-		Token readAccessToken = null;
+		final Token readAccessToken;
 		// looking for existing access token in file system
 		try {
-			readAccessToken = topeService.getTokenForUser( currentUser );
-		} catch ( IOException e1 ) {
-			e1.printStackTrace();
-			Logger.debug( "Error wihle trying to read token ",e1 );
+			readAccessToken = TokenPersistenceService.getTokenForUser( currentUser );
+		} catch ( IOException e ) {
+			Logger.error( "Error wihle trying to read token ", e );
+			return;
 		}
+		
+		// XXX if-else nesting gets complicated for one method -> you might use separate methods to separate concerns
 		if ( readAccessToken != null ) {
 
 			// check if users xing id is already in database
@@ -51,44 +49,54 @@ public class GetXingContactsAndSaveToDatabase {
 				// Send Api request for users xing id if not already present database
 				try {
 					User xingUser;
-					xingUser = xingService
+					xingUser = XingApiCallService
 							.getUserWithActiveMailAndId( readAccessToken );
 					currentUser.active_email = xingUser.active_email;
 					currentUser.xingId = xingUser.xingId;
 					currentUser.save();
 				} catch ( IOException e ) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Logger.error( "Failed to get Xing user", e );
+					// XXX Return?
 				}
-			} else {
+			}
+			// XXX Is that really an else?
+			else {
 				//Send Api request for users xing contacts
 				JsonContactsWrapper contactsWrapper;
 				try {
-					contactsWrapper = xingService
+					contactsWrapper = XingApiCallService
 							.getJsonContactsWrapperForToken( readAccessToken );
-					xingPersistService.persistContactsFromJsonContactsWrapper(
+					XingPersistenceService.persistContactsFromJsonContactsWrapper(
 							currentUser, contactsWrapper );
 				} catch ( IOException e ) {
-					e.printStackTrace();
-					Logger.debug( "Error receiving response of request", e );
+					// XXX No need for printing stack trace and logging, use logging solely
+					//e.printStackTrace();
+					// XXX Always use error level for errors!
+					Logger.error( "Error receiving response of request", e );
 				}
 			}
 		// No token stored for user, redirect user to auth page and get token
 		} else {
-			String AuthorizationUrl = xingService.getAuthorizationUrl();
+			String AuthorizationUrl = XingApiCallService.getAuthorizationUrl();
 			ContactsView.authPage( AuthorizationUrl );
 		}
+		
+		// XXX Really use that here?? authPage above already calls start()
 		ContactsView.start();
 	}
 
+    
 	public static void saveToken( User currentUser, Verifier verifier ) {
 		// Trade the Request Token and Verfier for the Access Token
-		Token accessToken = xingService.getAccessToken( verifier );
+		// XXX Trade?
+		
+		// XXX Put that into try block too? What exceptions can occur?
+		Token accessToken = XingApiCallService.getAccessToken( verifier );
 		try {
-			topeService.saveTokenForUser( currentUser, accessToken );
+			TokenPersistenceService.saveTokenForUser( currentUser, accessToken );
 		} catch ( IOException e ) {
-			e.printStackTrace();
-			Logger.debug("Error while saving token for user: "
+			// XXX Check if Logger can take multiple arguments like Logger.error("my message: {}", email, e)
+			Logger.error("Error while saving token for user: "
 					+ currentUser.email, e);
 		}
 	} 		
