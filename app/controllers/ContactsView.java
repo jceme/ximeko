@@ -4,10 +4,16 @@ import play.*;
 import play.mvc.*;
 import play.cache.Cache;
 import play.data.validation.*;
-import sun.util.locale.provider.AuxLocaleProviderAdapter;
 import util.GetXingContactsAndSaveToDatabase;
+import util.TokenPersistenceService;
+import util.XingApiCallService;
+import util.XingPersistenceService;
 
+import java.io.IOException;
 import java.util.*;
+
+import org.scribe.model.Token;
+import org.scribe.model.Verifier;
 
 import models.*;
 import util.*;
@@ -15,7 +21,6 @@ import util.*;
 
 public class ContactsView extends Application {
 	
-
 	@Before
 	static void checkUser() {
 		if (connected() == null) {
@@ -46,7 +51,7 @@ public class ContactsView extends Application {
 
 	public static void connectWithXing() {
 		GetXingContactsAndSaveToDatabase.forUser( connected() );
-		start();
+//		start();
 	}
 
 	public static void settings() {
@@ -87,7 +92,30 @@ public class ContactsView extends Application {
 		start();
 	}
 
-	public static void authPage(String authorizationUrl) {
-		render(authorizationUrl);
+	public static void authPage( String authorizationUrl ) {
+		if ( authorizationUrl.isEmpty() == false ) {
+			render(authorizationUrl);
+		} else {
+			flash.error("Ein Fehler ist aufgetreten, bitte versuchen sie es später erneut");
+			start();
+		}
 	}
+	
+	public static void verifier () {
+		String oauth_verifier = params.get("oauth_verifier");
+		String xing_error = params.get("xing_error");
+		
+		if ( xing_error != null && xing_error.equals("user_abort")) {
+			flash.error("Sie haben den Vorgang abgebrochen, bitte wiederholen Sie ihn und geben ihr Einverständnis");
+			start();
+		}
+		if ( oauth_verifier != null ) { 
+			Verifier verifier = new Verifier( oauth_verifier );
+			GetXingContactsAndSaveToDatabase.saveToken( connected(), verifier);
+			flash.success("Verbindung zu XING erfolgreich hergestellt");
+			start();
+		} else
+			flash.error("Verbindung zu XING konnte nicht hergestellt werden, bitte versuchen Sie es später erneut");
+	}
+	
 }

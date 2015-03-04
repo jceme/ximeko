@@ -38,7 +38,7 @@ public class TokenPersistenceService {
 			throw new IOException("Invalid content for token: "+obj);
 		}
 		catch (FileNotFoundException e) {
-			Logger.debug("Tokenfile not found", path);
+			Logger.debug("Token file not found", path);
 			return null;
 		}
 		catch (ClassNotFoundException e) {

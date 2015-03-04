@@ -25,13 +25,14 @@ public class XingApiCallService {
 	private static final String GET_ID_EMAIL = "https://api.xing.com/v1/users/me.json?fields=id,active_email";
 	private static final String GET_CONTACTS = "https://api.xing.com/v1/users/me/contacts.json?user_fields=id,first_name,last_name,display_name,permalink";
 	private final OAuthService service;
+	private Token requestToken = null;
 	
 	public XingApiCallService() {
 		service = (OAuthService) new ServiceBuilder().
 				provider(XingApi.class)
 				.apiKey("891c8ed2c53864fb97c6")
 				.apiSecret("e3d5b2450ab6cd84e76c19286267e2e61038337e")
-				.callback("http://localhost:9000/contactsview/connectwithxing")
+				.callback("http://localhost:9000/contactsview/verifier")
 				.build();
 	}
 	
@@ -79,21 +80,22 @@ public class XingApiCallService {
 	}
 	/**
 	 * 
-	 * @return the Url for the server authentification page
+	 * @return the Url for the server authentication page
 	 */
 	public String getAuthorizationUrl() {
 		return service.getAuthorizationUrl( getRequestToken());
 	}
 
 	public Token getRequestToken() {
-		return service.getRequestToken();
+		if ( this.requestToken == null ) {
+			this.requestToken = service.getRequestToken();
+			return this.requestToken;
+		}
+		else return this.requestToken;
 	}
 
-	public Token getAccessToken(Token requestToken, Verifier verifier) {
-		return service.getAccessToken(requestToken, verifier);
+	public Token getAccessToken( Verifier verifier ) {
+		return service.getAccessToken( getRequestToken(), verifier );
 	}
 	
-	public Verifier getVerifier() {
-		return null;
-	}
 }

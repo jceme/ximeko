@@ -76,19 +76,20 @@ public class GetXingContactsAndSaveToDatabase {
 		// No token stored for user, redirect user to auth page and get token
 		} else {
 			String AuthorizationUrl = xingService.getAuthorizationUrl();
-			ContactsView.authPage(AuthorizationUrl);
-			Verifier verifier = new Verifier( "1234" );
-			Token requestToken = xingService.getRequestToken();
-
-			// Trade the Request Token and Verfier for the Access Token
-			Token accessToken = xingService.getAccessToken( requestToken, verifier );
-			try {
-				topeService.saveTokenForUser( currentUser, accessToken );
-			} catch ( IOException e ) {
-				e.printStackTrace();
-				Logger.debug("Error while saving token for user: "+currentUser.email, e);
-			}
+			ContactsView.authPage( AuthorizationUrl );
 		}
 		ContactsView.start();
 	}
+
+	public static void saveToken( User currentUser, Verifier verifier ) {
+		// Trade the Request Token and Verfier for the Access Token
+		Token accessToken = xingService.getAccessToken( verifier );
+		try {
+			topeService.saveTokenForUser( currentUser, accessToken );
+		} catch ( IOException e ) {
+			e.printStackTrace();
+			Logger.debug("Error while saving token for user: "
+					+ currentUser.email, e);
+		}
+	} 		
 }
